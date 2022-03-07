@@ -122,7 +122,7 @@ public class TestGame implements ILogic {
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
 
-        //entity.incRotation(0.0f, 0.5f, 0.0f);
+        entity.incRotation(0.0f, 0.5f, 0.0f);
 
     }
 

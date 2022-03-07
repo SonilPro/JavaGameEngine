@@ -33,7 +33,6 @@ public class RenderManager {
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
         shader.setUniform("projectionMatrix", window.updateProjectionMatrix());
         shader.setUniform("viewMatrix", Transformation.getViewMatrix(camera));
-        System.out.println(Transformation.createTransformationMatrix(entity));
 
         glBindVertexArray(entity.getModel().getId());
         glEnableVertexAttribArray(0);
