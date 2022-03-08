@@ -1,2 +1,2 @@
 # JavaGameEngine
-Hobby project to learn computer graphics.
+Hobby project to learn computer graphics!
