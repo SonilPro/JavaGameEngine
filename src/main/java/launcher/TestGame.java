@@ -92,7 +92,7 @@ public class TestGame implements ILogic {
 
         Model model = loader.loadModel(vertices, indices);
         model.setTexture(loader.loadTexture("textures/R.png"));
-        entity = new Entity(model, new Vector3f(0f, 0, -5), new Vector3f(10, 0, 0), 1);
+        entity = new Entity(model, new Vector3f(0f, 0, -5), new Vector3f(0, 0, 0), 1);
     }
 
     @Override

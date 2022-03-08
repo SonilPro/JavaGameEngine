@@ -27,6 +27,8 @@ public class WindowManager {
 
     private static Callback cb;
 
+    private boolean wireframeToggle = false;
+
     public WindowManager(String title, int width, int height, boolean vSync) {
         this.title = title;
         this.width = width;
@@ -71,6 +73,8 @@ public class WindowManager {
         GLFW.glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE)
                 GLFW.glfwSetWindowShouldClose(window, true);
+            if (key == GLFW.GLFW_KEY_B && action == GLFW.GLFW_PRESS)
+                wireframeToggle = !wireframeToggle;
         });
 
         if (maximised) {
@@ -100,6 +104,11 @@ public class WindowManager {
     }
 
     public void update() {
+        if (wireframeToggle)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        else
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
         GLFW.glfwSwapBuffers(window);
         GLFW.glfwPollEvents();
     }

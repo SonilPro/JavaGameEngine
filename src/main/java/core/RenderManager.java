@@ -35,13 +35,9 @@ public class RenderManager {
         shader.setUniform("viewMatrix", Transformation.getViewMatrix(camera));
 
         glBindVertexArray(entity.getModel().getId());
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, entity.getModel().getTexture().getId());
         glDrawElements(GL_TRIANGLES, entity.getModel().getVertexCount(), GL_UNSIGNED_INT, 0);
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
 
         //Unbind
         glBindVertexArray(0);

@@ -24,7 +24,7 @@ class VertexBufferElement {
     }
 
     static int getSizeOfType(int type) {
-        int result = switch (type) {
+        return switch (type) {
             case GL_FLOAT:
                 yield 4;
             case GL_UNSIGNED_BYTE:
@@ -32,7 +32,6 @@ class VertexBufferElement {
             default:
                 yield 4;
         };
-        return result;
     }
 }
 
@@ -52,14 +51,16 @@ public class ObjectLoader {
     private List<Integer> vbos = new ArrayList<>();
     private List<Integer> textures = new ArrayList<>();
 
+    private VertexBufferLayout layout;
+
     public Model loadModel(float[] vertices, int[] indices) {
         int id = createVAO();
         storeIndexBuffer(indices);
         storeVertexBuffer(vertices);
-        VertexBufferLayout layout = new VertexBufferLayout();
+        layout = new VertexBufferLayout();
         layout.push(3, GL_FLOAT);
         layout.push(2, GL_FLOAT);
-        addBuffer(layout);
+        addBuffer();
         unbind();
         return new Model(id, indices.length);
     }
@@ -115,11 +116,12 @@ public class ObjectLoader {
         glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
     }
 
-    private void addBuffer(VertexBufferLayout layout) {
+    private void addBuffer() {
         int offset = 0;
         int i = 0;
         for (VertexBufferElement element : layout.elements) {
             glVertexAttribPointer(i, element.count, element.type, false, layout.stride, offset);
+            glEnableVertexAttribArray(i);
             i++;
             offset += element.count * VertexBufferElement.getSizeOfType(element.type);
         }
@@ -138,6 +140,11 @@ public class ObjectLoader {
         }
         for (int texture : textures) {
             glDeleteTextures(texture);
+        }
+        int i = 0;
+        for (VertexBufferElement element : layout.elements) {
+            glDisableVertexAttribArray(i);
+            i++;
         }
     }
 
