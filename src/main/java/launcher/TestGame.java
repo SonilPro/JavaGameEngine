@@ -3,9 +3,12 @@ package launcher;
 import core.*;
 import core.entity.Entity;
 import core.entity.Model;
+import imgui.ImGui;
+import imgui.flag.ImGuiConfigFlags;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL46;
 
 import static org.lwjgl.opengl.GL46.glViewport;
 
@@ -22,6 +25,9 @@ public class TestGame implements ILogic {
     private Camera camera;
 
     Vector3f cameraInc;
+    Vector2f rotVec;
+
+    ImGuiLayer imGuiLayer;
 
     public TestGame() {
         renderer = new RenderManager();
@@ -29,6 +35,8 @@ public class TestGame implements ILogic {
         loader = new ObjectLoader();
         camera = new Camera();
         cameraInc = new Vector3f(0, 0, 0);
+        rotVec = new Vector2f(0, 0);
+        imGuiLayer = new ImGuiLayer();
     }
 
     @Override
@@ -96,8 +104,14 @@ public class TestGame implements ILogic {
     }
 
     @Override
-    public void input() {
+    public void input(MouseInput mouseInput) {
         cameraInc.set(0, 0, 0);
+        rotVec.set(0, 0);
+
+        if (ImGui.getIO().getWantCaptureMouse()) {
+            return;
+        }
+
         if (window.isKeyPressed(GLFW.GLFW_KEY_W))
             cameraInc.z = -1;
         if (window.isKeyPressed(GLFW.GLFW_KEY_S))
@@ -110,17 +124,19 @@ public class TestGame implements ILogic {
             cameraInc.y = -1;
         if (window.isKeyPressed(GLFW.GLFW_KEY_SPACE))
             cameraInc.y = 1;
+
+
+        if (mouseInput.isLeftButtonPress()) {
+            rotVec = mouseInput.getDisplacementVec();
+        }
     }
 
     @Override
-    public void update(MouseInput mouseInput) {
+    public void update() {
 
         camera.movePosition(cameraInc.x * CAMERA_MOVE_SPEED, cameraInc.y * CAMERA_MOVE_SPEED, cameraInc.z * CAMERA_MOVE_SPEED);
 
-        if (mouseInput.isLeftButtonPress()) {
-            Vector2f rotVec = mouseInput.getDisplacementVec();
-            camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
-        }
+        camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
 
         entity.incRotation(0.0f, 0.5f, 0.0f);
 
@@ -134,6 +150,23 @@ public class TestGame implements ILogic {
         }
         window.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         renderer.render(entity, camera);
+
+        GL46.glPolygonMode(GL46.GL_FRONT_AND_BACK, GL46.GL_FILL);
+
+        window.getImGuiGlfw().newFrame();
+        ImGui.newFrame();
+
+        imGuiLayer.imguiEntity(entity);
+
+        ImGui.render();
+        window.getImGuiGl3().renderDrawData(ImGui.getDrawData());
+
+        if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
+            final long backupWindowPtr = GLFW.glfwGetCurrentContext();
+            ImGui.updatePlatformWindows();
+            ImGui.renderPlatformWindowsDefault();
+            GLFW.glfwMakeContextCurrent(backupWindowPtr);
+        }
     }
 
     @Override

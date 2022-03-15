@@ -1,12 +1,15 @@
 package core;
 
+import imgui.ImGui;
+import imgui.ImGuiIO;
+import imgui.flag.ImGuiConfigFlags;
+import imgui.gl3.ImGuiImplGl3;
+import imgui.glfw.ImGuiImplGlfw;
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GLUtil;
-import org.lwjgl.system.Callback;
 import org.lwjgl.system.MemoryUtil;
 
 import static org.lwjgl.opengl.GL46.*;
@@ -25,9 +28,11 @@ public class WindowManager {
 
     private final Matrix4f projectionMatrix;
 
-    private static Callback cb;
-
     private boolean wireframeToggle = false;
+
+    private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
+    private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
+
 
     public WindowManager(String title, int width, int height, boolean vSync) {
         this.title = title;
@@ -42,6 +47,7 @@ public class WindowManager {
 
         if (!GLFW.glfwInit())
             throw new IllegalStateException("Unable to initialize GLFW");
+
 
         GLFW.glfwDefaultWindowHints();
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GL_FALSE);
@@ -94,13 +100,19 @@ public class WindowManager {
 
         GL.createCapabilities();
 
-        cb = GLUtil.setupDebugMessageCallback();
-
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_STENCIL_TEST);
         //glEnable(GL_CULL_FACE);
         //glCullFace(GL_BACK);
+
+        ImGui.createContext();
+        ImGuiIO io = ImGui.getIO();
+        io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
+
+        imGuiGlfw.init(window, true);
+        imGuiGl3.init("#version 150");
+
     }
 
     public void update() {
@@ -114,8 +126,10 @@ public class WindowManager {
     }
 
     public void cleanup() {
+        imGuiGl3.dispose();
+        imGuiGlfw.dispose();
+        ImGui.destroyContext();
         GLFW.glfwDestroyWindow(window);
-        cb.free();
     }
 
     public void setClearColor(float r, float g, float b, float a) {
@@ -182,6 +196,14 @@ public class WindowManager {
         return projectionMatrix;
     }
 
+    public ImGuiImplGlfw getImGuiGlfw() {
+        return imGuiGlfw;
+    }
+
+    public ImGuiImplGl3 getImGuiGl3() {
+        return imGuiGl3;
+    }
+
     public Matrix4f updateProjectionMatrix() {
         float aspectRatio = (float) width / height;
         return projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
@@ -191,4 +213,5 @@ public class WindowManager {
         float aspectRatio = (float) width / height;
         return matrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
     }
+
 }

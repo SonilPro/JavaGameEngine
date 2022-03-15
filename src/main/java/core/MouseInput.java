@@ -57,7 +57,7 @@ public class MouseInput {
     }
 
     public Vector2f getDisplacementVec() {
-        return displacementVec;
+        return new Vector2f(displacementVec);
     }
 
     public boolean isLeftButtonPress() {
