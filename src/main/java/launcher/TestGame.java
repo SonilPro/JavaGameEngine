@@ -44,7 +44,7 @@ public class TestGame implements ILogic {
 
         renderer.init();
 
-        float[] vertices = {
+        /*float[] vertices = {
                 //FRONT SIDE
                 -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,//0
                 0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
@@ -96,10 +96,11 @@ public class TestGame implements ILogic {
                 //BOTTOM SIDE
                 20, 21, 22,
                 21, 23, 22
-        };
+        };*/
 
-        Model model = loader.loadModel(vertices, indices);
-        model.setTexture(loader.loadTexture("textures/R.png"));
+        /*Model model = loader.loadModel(vertices, indices);*/
+        Model model = loader.loadOBJModel("/models/human.obj");
+        model.setTexture(loader.loadTexture("textures/blue.png"));
         entity = new Entity(model, new Vector3f(0f, 0, -5), new Vector3f(0, 0, 0), 1);
     }
 
@@ -138,7 +139,7 @@ public class TestGame implements ILogic {
 
         camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
 
-        entity.incRotation(0.0f, 0.5f, 0.0f);
+        /*entity.incRotation(0.0f, 0.5f, 0.0f);*/
 
     }
 
