@@ -169,7 +169,7 @@ public class ObjectLoader {
         return new Model(id, indices.length);
     }
 
-    public Texture loadTexture(String filename) throws Exception {
+    public Texture loadTexture(String filename, float numberOfRows) throws Exception {
         int width, height;
         ByteBuffer buffer;
         STBImage.stbi_set_flip_vertically_on_load(true);
@@ -194,7 +194,7 @@ public class ObjectLoader {
         glGenerateMipmap(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
         STBImage.stbi_image_free(buffer);
-        return new Texture(id);
+        return new Texture(id, numberOfRows);
     }
 
     private int createVAO() {

@@ -10,9 +10,12 @@ uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 
+uniform float numberOfRows;
+uniform vec2 locationOffset;
+
 void main(){
     gl_Position = projectionMatrix * viewMatrix * transformationMatrix * vec4(position, 1.0);
-    fragTextureCoords = textureCoords;
+    fragTextureCoords = (textureCoords / numberOfRows) + locationOffset;
 }
 //FRAGMENT SHADER
 #version 400 core

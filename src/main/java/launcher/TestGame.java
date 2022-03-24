@@ -6,9 +6,13 @@ import core.entity.Model;
 import imgui.ImGui;
 import imgui.flag.ImGuiConfigFlags;
 import org.joml.Vector2f;
+import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL46;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL46.glViewport;
 
@@ -44,7 +48,7 @@ public class TestGame implements ILogic {
 
         renderer.init();
 
-        /*float[] vertices = {
+        float[] vertices = {
                 //FRONT SIDE
                 -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,//0
                 0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
@@ -78,29 +82,29 @@ public class TestGame implements ILogic {
         };
 
         int[] indices = {
-                //FRONT SIDE
-                0, 1, 2,
-                1, 3, 2,
-                //BACK SIDE
-                4, 5, 6,
-                5, 7, 6,
                 //LEFT SIDE
                 8, 9, 10,
                 9, 11, 10,
+                //FRONT SIDE
+                0, 1, 2,
+                1, 3, 2,
                 //RIGHT SIDE
                 12, 13, 14,
                 13, 15, 14,
+                //BACK SIDE
+                4, 5, 6,
+                5, 7, 6,
                 //TOP SIDE
                 16, 17, 18,
                 17, 19, 18,
                 //BOTTOM SIDE
                 20, 21, 22,
                 21, 23, 22
-        };*/
+        };
 
-        /*Model model = loader.loadModel(vertices, indices);*/
-        Model model = loader.loadOBJModel("/models/human.obj");
-        model.setTexture(loader.loadTexture("textures/blue.png"));
+        Model model = loader.loadModel(vertices, indices);
+        //Model model = loader.loadOBJModel("/models/human.obj");
+        model.setTexture(loader.loadTexture("textures/blocks.png", 16));
         entity = new Entity(model, new Vector3f(0f, 0, -5), new Vector3f(0, 0, 0), 1);
     }
 

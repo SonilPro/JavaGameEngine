@@ -24,6 +24,8 @@ public class RenderManager {
         shader.createUniform("transformationMatrix");
         shader.createUniform("projectionMatrix");
         shader.createUniform("viewMatrix");
+        shader.createUniform("numberOfRows");
+        shader.createUniform("locationOffset");
     }
 
     public void render(Entity entity, Camera camera) {
@@ -33,11 +35,16 @@ public class RenderManager {
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
         shader.setUniform("projectionMatrix", window.updateProjectionMatrix());
         shader.setUniform("viewMatrix", Transformation.getViewMatrix(camera));
+        shader.setUniform("numberOfRows", entity.getModel().getTexture().getNumberOfRows());
 
         glBindVertexArray(entity.getModel().getId());
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, entity.getModel().getTexture().getId());
-        glDrawElements(GL_TRIANGLES, entity.getModel().getVertexCount(), GL_UNSIGNED_INT, 0);
+
+        for (int i = 0; i < entity.getModel().getTexCoordinates().size(); i++) {
+            shader.setUniform("locationOffset", entity.getModel().getTexCoordinates().get(i));
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (long) i * 6 * VertexBufferElement.getSizeOfType(GL_UNSIGNED_INT));
+        }
 
         //Unbind
         glBindVertexArray(0);
